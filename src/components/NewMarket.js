@@ -14,7 +14,13 @@ import {
 import { UserContext } from "../App";
 import { setSeconds } from "date-fns";
 
-function NewMarket() {
+function NewMarket({
+  searchTerm,
+  isSearching,
+  handleSearchChange,
+  handleClearSearch,
+  handleSearch
+}) {
   const [addMarketDialog, setAddMarketDialog] = useState(false);
   const [name, setName] = useState("");
   const [tags, setTags] = useState([
@@ -73,6 +79,28 @@ function NewMarket() {
                 onClick={() => setAddMarketDialog(true)}
               />
             </h1>
+
+            <Form inline={true} onSubmit={handleSearch}>
+              <Form.Item>
+                <Input
+                  placeholder="Search Market..."
+                  icon="circle-cross"
+                  onIconClick={handleClearSearch}
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="info"
+                  icon="search"
+                  onClick={handleSearch}
+                  loading={isSearching}
+                >
+                  Search
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
           <Dialog
             title="Create new market"
@@ -84,7 +112,7 @@ function NewMarket() {
             <Dialog.Body>
               <Form labelPosition="top">
                 <Form.Item label="Add Market Name">
-                  <input
+                  <Input
                     placeholder="Market Name"
                     trim={true}
                     onChange={handleInput}
