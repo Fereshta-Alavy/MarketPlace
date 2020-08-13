@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import MarketPage from "./pages/MarketPage";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
+export const UserContext = React.createContext();
 
 function App() {
   const logger = new Logger("My-Logger");
@@ -22,25 +23,6 @@ function App() {
     const user = await Auth.currentAuthenticatedUser();
     user ? setUser(user) : setUser(null);
   }
-
-  // const listener = data => {
-  //   switch (data.payload.event) {
-  //     case "signIn":
-  //       logger.error("user signed in"); //[ERROR] My-Logger - user signed in
-  //       break;
-  //     case "signUp":
-  //       logger.error("user signed up");
-  //       break;
-  //     case "signOut":
-  //       logger.error("user signed out");
-  //       break;
-  //     case "signIn_failure":
-  //       logger.error("user sign in failed");
-  //       break;
-  //     case "configured":
-  //       console.log("the Auth module is configured");
-  //   }
-  // };
 
   function onAuthEvent(payload) {
     console.log("hereeee");
@@ -74,21 +56,23 @@ function App() {
   return !user ? (
     <Authenticator theme={theme} />
   ) : (
-    <Router>
-      <>
-        <Navbar user={user} handleSignOut={handleSignOut} />
-        <div className="app-container">
-          <Route exact path="/" component={HomePage} />
-          <Route path="/profile" component={ProfilePage} />
-          <Route
-            path="/markets/:marketId"
-            component={({ match }) => (
-              <MarketPage marketId={match.params.marketId} />
-            )}
-          />
-        </div>
-      </>
-    </Router>
+    <UserContext.Provider value={{ user }}>
+      <Router>
+        <>
+          <Navbar user={user} handleSignOut={handleSignOut} />
+          <div className="app-container">
+            <Route exact path="/" component={HomePage} />
+            <Route path="/profile" component={ProfilePage} />
+            <Route
+              path="/markets/:marketId"
+              component={({ match }) => (
+                <MarketPage marketId={match.params.marketId} />
+              )}
+            />
+          </div>
+        </>
+      </Router>
+    </UserContext.Provider>
   );
   // <div>app</div>
 }
@@ -100,5 +84,4 @@ const theme = {
   }
 };
 
-// export default withAuthenticator(App,true, [], null,theme);
 export default App;
