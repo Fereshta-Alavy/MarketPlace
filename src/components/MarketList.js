@@ -8,7 +8,7 @@ import Error from "./Error";
 
 import { Link } from "react-router-dom";
 
-const MarketList = () => {
+const MarketList = ({ searchResults }) => {
   function onNewMarket(preQuery, newData) {
     let updatedQuery = { ...preQuery };
     const updatedMarketList = [
@@ -27,19 +27,28 @@ const MarketList = () => {
       {({ data, loading, errors }) => {
         if (errors.length > 0) return <Error errors={errors} />;
         if (loading || !data.listMarkets) return <Loading fullscreen={true} />;
+        const markets =
+          searchResults.length > 0 ? searchResults : data.listMarkets.items;
 
         return (
           <>
-            <h2 className="header">
-              <img
-                src="https://img.icons8.com/color/30/000000/shopping-mall.png"
-                color="527FFF"
-                alt=""
-                className="large-icon"
-              />
-              Markets
-            </h2>
-            {data.listMarkets.items.map(market => (
+            {searchResults.length > 0 ? (
+              <h2 className="text-green">
+                <Icon type="succes" name="check" className="icon" />
+                {searchResults.length}
+              </h2>
+            ) : (
+              <h2 className="header">
+                <img
+                  src="https://img.icons8.com/color/30/000000/shopping-mall.png"
+                  color="527FFF"
+                  alt=""
+                  className="large-icon"
+                />
+                Markets
+              </h2>
+            )}
+            {markets.map(market => (
               <div className=" my-2" key={market.id}>
                 <Card
                   bodyStyle={{
@@ -55,6 +64,7 @@ const MarketList = () => {
                         {market.name}
                       </Link>
                       <span style={{ color: "var(--darkAmazonOrange)" }}>
+                        {/* {market.products.items.length} */}
                         {0}
                       </span>
                       <img

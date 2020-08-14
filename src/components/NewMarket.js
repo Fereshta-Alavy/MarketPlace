@@ -12,7 +12,6 @@ import {
 } from "element-react";
 
 import { UserContext } from "../App";
-import { setSeconds } from "date-fns";
 
 function NewMarket({
   searchTerm,
@@ -31,10 +30,12 @@ function NewMarket({
   ]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [options, setOptions] = useState([]);
-  function handleInput(event) {
-    setName(event.target.value);
-  }
+
+  // function handleInput(event) {
+  //   setName(event.target.value);
+  // }
   async function handleAddMarket(user) {
+    console.log("user is", user.attributes.email);
     try {
       setAddMarketDialog(false);
       const input = {
@@ -115,7 +116,7 @@ function NewMarket({
                   <Input
                     placeholder="Market Name"
                     trim={true}
-                    onChange={handleInput}
+                    onChange={name => setName(name)}
                     value={name}
                   />
                 </Form.Item>
