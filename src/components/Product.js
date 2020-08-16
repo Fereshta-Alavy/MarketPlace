@@ -62,7 +62,6 @@ function Product({ product, key }) {
   return (
     <UserContext.Consumer>
       {user => {
-        console.log("thiss is", product.file.key);
         const isProductOwner =
           user && user.user.attributes.sub === product.owner;
         return (
