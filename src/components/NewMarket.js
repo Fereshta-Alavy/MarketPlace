@@ -40,13 +40,13 @@ function NewMarket({
       setAddMarketDialog(false);
       const input = {
         name: name,
-        owner: user.username,
+        owner: user.attributes.email,
         tags: selectedTags
       };
       const result = await API.graphql(
         graphqlOperation(createMarket, { input })
       );
-      console.log(result);
+      console.log({ result });
       console.info(`created market : id ${result.data.createMarket.id}`);
       setName("");
       setSelectedTags([]);

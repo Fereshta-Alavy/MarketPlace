@@ -14,6 +14,7 @@ function Product({ product, key }) {
   const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+  const [isProductOwner, setIsProductOwner] = useState(false);
 
   async function handleUpdateProduct(productId) {
     try {
@@ -29,7 +30,6 @@ function Product({ product, key }) {
       const result = await API.graphql(
         graphqlOperation(updateProduct, { input })
       );
-      console.log(result);
       Notification({
         title: "Success",
         message: "Product Updated Successfully",
@@ -61,9 +61,9 @@ function Product({ product, key }) {
   }
   return (
     <UserContext.Consumer>
-      {user => {
-        const isProductOwner =
-          user && user.user.attributes.sub === product.owner;
+      {({ user }) => {
+        const isProductOwner = user && user.attributes.sub === product.owner;
+        // console.log("in the product page", isProductOwner);
         return (
           <div className="card-container">
             <Card bodyStyle={{ padding: 0, minWidth: "200px" }}>
@@ -91,7 +91,9 @@ function Product({ product, key }) {
                     {" "}
                     ${converCentsToDollars(product.price)}
                   </span>
-                  {!isProductOwner && <PayButton />}
+                  {!isProductOwner && (
+                    <PayButton product={product} user={user} />
+                  )}
                 </div>
               </div>
             </Card>

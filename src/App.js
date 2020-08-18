@@ -20,12 +20,11 @@ function App() {
   }, []);
 
   async function getUserData() {
-    const user = await Auth.currentAuthenticatedUser();
-    user ? setUser(user) : setUser(null);
+    const authUser = await Auth.currentAuthenticatedUser();
+    authUser ? setUser(authUser) : setUser(null);
   }
 
   function onAuthEvent(payload) {
-    console.log("hereeee");
     switch (payload.payload.event) {
       case "signIn":
         console.log("signed in");

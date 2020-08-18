@@ -8,7 +8,7 @@ import Error from "./Error";
 
 import { Link } from "react-router-dom";
 
-const MarketList = ({ searchResults }) => {
+function MarketList({ searchResults }) {
   function onNewMarket(preQuery, newData) {
     let updatedQuery = { ...preQuery };
     const updatedMarketList = [
@@ -25,10 +25,13 @@ const MarketList = ({ searchResults }) => {
       onSubscriptionMsg={onNewMarket}
     >
       {({ data, loading, errors }) => {
+        console.log("market list page", data);
         if (errors.length > 0) return <Error errors={errors} />;
         if (loading || !data.listMarkets) return <Loading fullscreen={true} />;
         const markets =
           searchResults.length > 0 ? searchResults : data.listMarkets.items;
+
+        // console.log("list markets items", data.listMarkets.items);
 
         return (
           <>
@@ -64,8 +67,10 @@ const MarketList = ({ searchResults }) => {
                         {market.name}
                       </Link>
                       <span style={{ color: "var(--darkAmazonOrange)" }}>
-                        {/* {market.products.items.length} */}
-                        {0}
+                        {market.products.items
+                          ? market.products.items.length
+                          : 0}
+                        {/* {0} */}
                       </span>
                       <img
                         src="https://img.icons8.com/nolan/30/shopping-cart-promotion.png"
@@ -92,6 +97,6 @@ const MarketList = ({ searchResults }) => {
       }}
     </Connect>
   );
-};
+}
 
 export default MarketList;

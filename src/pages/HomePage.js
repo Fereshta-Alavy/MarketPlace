@@ -33,7 +33,6 @@ function HomePage() {
           }
         })
       );
-      console.log(result);
       setSearchResults(result.data.searchMarkets.items);
       setIsSearching(false);
     } catch (err) {

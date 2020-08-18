@@ -21,11 +21,11 @@ const getMarket = `query GetMarket($id: ID!) {
           price
           shipped
           owner
+          createdAt
+          updatedAt
           file {
             key
           }
-          createdAt
-          updatedAt
         }
         nextToken
       }
@@ -47,11 +47,6 @@ function MarketPage({ marketId, user }) {
 
   useEffect(() => {
     handleGetMarket();
-    return () => {
-      createProductListener.unsubscribe();
-      updateProductListener.unsubscribe();
-      deleteProductListener.unsubscribe();
-    };
   }, []);
 
   useEffect(() => {
@@ -117,7 +112,7 @@ function MarketPage({ marketId, user }) {
 
   useEffect(() => {
     if (user && market) {
-      if (user.username === market.owner) {
+      if (user.attributes.email === market.owner) {
         setIsMarketOwner(true);
       }
     }
@@ -133,18 +128,10 @@ function MarketPage({ marketId, user }) {
       id: marketId
     };
     const result = await API.graphql(graphqlOperation(getMarket, input));
-    console.log(result);
     setMarket(result.data.getMarket);
     setIsLoading(false);
   }
 
-  // function checkMarketOwner() {
-  //   if (user) {
-  //     if (user.username === market.owner) {
-  //       setIsMarketOwner(true);
-  //     }
-  //   }
-  // }
   return isLoading ? (
     <Loading fullscreen={true} />
   ) : (
