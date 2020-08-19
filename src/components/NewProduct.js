@@ -2,12 +2,28 @@ import React, { useState } from "react";
 import { PhotoPicker } from "aws-amplify-react";
 import { Auth, Storage, API, graphqlOperation } from "aws-amplify";
 import { createProduct } from "../graphql/mutations";
-import { convertDollarToCents } from "../utils";
+import { convertDollarToCents, formatOrderDate } from "../utils";
+import PickUpPlace from "./PickUpPlace";
 // prettier-ignore
 import { Form, Button, Input, Notification, Radio, Progress } from "element-react";
 import aws_exports from "../aws-exports";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+
+const useStyles = makeStyles(theme => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 230
+  }
+}));
 
 function NewProduct({ marketId, user }) {
+  const classes = useStyles();
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
@@ -15,6 +31,12 @@ function NewProduct({ marketId, user }) {
   const [ImagePreview, setImagePreview] = useState("");
   const [image, setImage] = useState("");
   const [percentUpload, setPercentUploaded] = useState(0);
+  const [pickUpTime, setPickUpTime] = useState(Date);
+  const [coordinates, setCoordinates] = useState({
+    lat: null,
+    lng: null
+  });
+  const [address, setAddress] = useState("");
 
   async function handleAddProduct() {
     try {
@@ -43,6 +65,10 @@ function NewProduct({ marketId, user }) {
         owner: user.attributes.sub,
         description: description,
         shipped: shipped,
+        pickUpAddress: address,
+        pickUpTime: pickUpTime,
+        lat: coordinates.lat,
+        lng: coordinates.lng,
         price: convertDollarToCents(price),
         file
       };
@@ -68,6 +94,7 @@ function NewProduct({ marketId, user }) {
       console.error("error adding product", err);
     }
   }
+
   return (
     <div className="flex-center">
       <h2 className="header">Add New Product</h2>
@@ -93,9 +120,15 @@ function NewProduct({ marketId, user }) {
             />
           </Form.Item>
 
-          <Form.Item label="Is the Product shipped or emailed to the customer?">
+          <Form.Item label="Choose PickUp Place By Searching For a Public Around You!">
             <div className="text-center">
-              <Radio
+              <PickUpPlace
+                setCoordinates={setCoordinates}
+                setAddress={setAddress}
+                address={address}
+              />
+
+              {/* <Radio
                 value="true"
                 checked={shipped === true}
                 onChange={() => setShipped(true)}
@@ -108,7 +141,23 @@ function NewProduct({ marketId, user }) {
                 onChange={() => setShipped(false)}
               >
                 Emailed
-              </Radio>
+              </Radio> */}
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <div>
+              <form className={classes.container} noValidate>
+                <TextField
+                  id="datetime-local"
+                  label="Select DropOff Date/Time"
+                  type="datetime-local"
+                  onChange={event => setPickUpTime(event.target.value)}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </form>
             </div>
           </Form.Item>
           {ImagePreview && (
@@ -153,7 +202,14 @@ function NewProduct({ marketId, user }) {
           />
           <Form.Item>
             <Button
-              disabled={!description || !price || !image || isUploading}
+              disabled={
+                !description ||
+                !price ||
+                !image ||
+                isUploading ||
+                !pickUpTime ||
+                !PickUpPlace
+              }
               type="primary"
               onClick={handleAddProduct}
               loading={isUploading}

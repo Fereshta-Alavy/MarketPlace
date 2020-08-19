@@ -18,23 +18,20 @@ function PayButton({ product, userAttributes }) {
     try {
       const input = { id: ownerId };
       const result = await API.graphql(graphqlOperation(getUser, input));
-      console.log("this is the product owner id in the payButton", result);
       return result.data.getUser.email;
-    } catch (err) {
-      console.error("error fetching product owner email", err);
-    }
+    } catch (err) {}
   }
-  function createShippingAddress(source) {
-    const data = {
-      city: source.address_city,
-      country: source.address_country,
-      address_line1: source.address_line1,
-      address_state: source.address_state,
-      add_zip: source.add_zip
-    };
+  // function createShippingAddress(source) {
+  //   const data = {
+  //     city: source.address_city,
+  //     country: source.address_country,
+  //     address_line1: source.address_line1,
+  //     address_state: source.address_state,
+  //     add_zip: source.add_zip
+  //   };
 
-    return data;
-  }
+  //   return data;
+  // }
 
   async function handleCharge(token) {
     try {
@@ -46,27 +43,26 @@ function PayButton({ product, userAttributes }) {
           charge: {
             currency: stripeConfig.currency,
             amount: product.price,
-            description: product.description
+            description: product.description,
+            pickUpAddress: product.pickUpAddress
           },
           email: {
             customerEmail: userAttributes.email,
-            ownerEmail,
-            shipped: product.shipped
+            ownerEmail
           }
         }
       });
       console.log(result);
       if (result.charge.status === "succeeded") {
-        let shippingAddress = null;
+        // let shippingAddress = null;
         console.log();
-        if (product.shipped) {
-          shippingAddress = createShippingAddress(result.charge.source);
-        }
+        // if (product.shipped) {
+        //   shippingAddress = createShippingAddress(result.charge.source);
+        // }
 
         const input = {
           orderUserId: userAttributes.sub,
-          orderProductId: product.id,
-          shippingAddress
+          orderProductId: product.id
         };
         const order = await API.graphql(
           graphqlOperation(createOrder, { input })
@@ -105,8 +101,8 @@ function PayButton({ product, userAttributes }) {
       amount={product.price}
       currency={stripeConfig.currency}
       stripeKey={stripeConfig.publishableAPIKey}
-      shippingAddress={product.shipped}
-      billingAddress={product.shipped}
+      // shippingAddress={product.shipped}
+      // billingAddress={product.shipped}
       locale="auto"
       allowRememberMe={false}
     />

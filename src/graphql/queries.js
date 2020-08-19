@@ -12,7 +12,11 @@ export const getMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
           updatedAt
         }
@@ -70,7 +74,11 @@ export const getProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
       updatedAt
     }
@@ -101,7 +109,11 @@ export const listProducts = /* GraphQL */ `
         }
         price
         shipped
+        pickUpAddress
+        lat
+        lng
         owner
+        pickUpTime
         createdAt
         updatedAt
       }

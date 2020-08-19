@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Loading, Tabs, Icon } from "element-react";
 import { API, graphqlOperation, Auth } from "aws-amplify";
+// import { getMarket } from "../graphql/queries";
 import {
   onCreateProduct,
   onDeleteProduct,
@@ -22,6 +23,10 @@ const getMarket = `query GetMarket($id: ID!) {
           description
           price
           shipped
+          pickUpAddress
+          pickUpTime
+          lat
+          lng
           owner
           createdAt
           updatedAt
@@ -134,6 +139,7 @@ function MarketPage({ marketId, user, userAttributes }) {
     };
     const result = await API.graphql(graphqlOperation(getMarket, input));
     setMarket(result.data.getMarket);
+    console.log("in the market page", result.data.getMarket);
     setIsLoading(false);
   }
 

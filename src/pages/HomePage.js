@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NewMarket from "../components/NewMarket";
 import MarketList from "../components/MarketList";
 import { API, graphqlOperation } from "aws-amplify";
@@ -8,6 +8,19 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [userPosition, setUserPosition] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      setUserPosition(pos);
+      console.log("Latitude:" + position.coords.latitude);
+      console.log("Longitude:" + position.coords.longitude);
+    });
+  });
 
   function handleSearchChange(searchTerm) {
     setSearchTerm(searchTerm);

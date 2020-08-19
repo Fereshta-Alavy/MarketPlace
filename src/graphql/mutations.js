@@ -15,7 +15,11 @@ export const createMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
           updatedAt
         }
@@ -42,7 +46,11 @@ export const updateMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
           updatedAt
         }
@@ -69,7 +77,11 @@ export const deleteMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
           updatedAt
         }
@@ -108,7 +120,11 @@ export const createProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
       updatedAt
     }
@@ -140,7 +156,11 @@ export const updateProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
       updatedAt
     }
@@ -172,7 +192,11 @@ export const deleteProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
       updatedAt
     }
@@ -249,7 +273,11 @@ export const createOrder = /* GraphQL */ `
         }
         price
         shipped
+        pickUpAddress
+        lat
+        lng
         owner
+        pickUpTime
         createdAt
         updatedAt
       }
@@ -263,13 +291,6 @@ export const createOrder = /* GraphQL */ `
         }
         createdAt
         updatedAt
-      }
-      shippingAddress {
-        city
-        country
-        address_line1
-        address_state
-        address_zip
       }
       createdAt
       updatedAt
