@@ -4,6 +4,7 @@ import { converCentsToDollars } from "../utils";
 import { UserContext } from "../App";
 import { updateProduct, deleteProduct } from "../graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
+import { Link } from "react-router-dom";
 // prettier-ignore
 import { Notification, Popover, Button, Dialog, Card, Form, Input, Radio, Icon } from "element-react";
 import PayButton from "./PayButton";
@@ -61,8 +62,12 @@ function Product({ product, key }) {
   }
   return (
     <UserContext.Consumer>
-      {({ user }) => {
-        const isProductOwner = user && user.attributes.sub === product.owner;
+      {({ user, userAttributes }) => {
+        if (user && user.attributes.sub === product.owner) {
+          setIsProductOwner(true);
+        }
+        const isEmailVerified = userAttributes && userAttributes.email_verified;
+        // const isProductOwner = user && user.attributes.sub === product.owner;
         // console.log("in the product page", isProductOwner);
         return (
           <div className="card-container">
@@ -91,8 +96,17 @@ function Product({ product, key }) {
                     {" "}
                     ${converCentsToDollars(product.price)}
                   </span>
-                  {!isProductOwner && (
-                    <PayButton product={product} user={user} />
+                  {isEmailVerified ? (
+                    !isProductOwner && (
+                      <PayButton
+                        product={product}
+                        userAttributes={userAttributes}
+                      />
+                    )
+                  ) : (
+                    <Link to="/profile" className="link">
+                      Verify email
+                    </Link>
                   )}
                 </div>
               </div>

@@ -7,7 +7,7 @@ import { convertDollarToCents } from "../utils";
 import { Form, Button, Input, Notification, Radio, Progress } from "element-react";
 import aws_exports from "../aws-exports";
 
-function NewProduct({ marketId }) {
+function NewProduct({ marketId, user }) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
@@ -40,6 +40,7 @@ function NewProduct({ marketId }) {
 
       const input = {
         productMarketId: marketId,
+        owner: user.attributes.sub,
         description: description,
         shipped: shipped,
         price: convertDollarToCents(price),

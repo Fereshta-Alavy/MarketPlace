@@ -10,11 +10,13 @@ import { Link } from "react-router-dom";
 import NewProduct from "../components/NewProduct";
 import Product from "../components/Product";
 
+import { formatProductDate } from "../utils";
+
 const getMarket = `query GetMarket($id: ID!) {
     getMarket(id: $id) {
       id
       name
-      products {
+      products (sortDirection: DESC, limit : 999){
         items {
           id
           description
@@ -37,10 +39,11 @@ const getMarket = `query GetMarket($id: ID!) {
   }
 `;
 
-function MarketPage({ marketId, user }) {
+function MarketPage({ marketId, user, userAttributes }) {
   const [market, setMarket] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMarketOwner, setIsMarketOwner] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   let createProductListener = null;
   let updateProductListener = null;
   let deleteProductListener = null;
@@ -115,6 +118,8 @@ function MarketPage({ marketId, user }) {
       if (user.attributes.email === market.owner) {
         setIsMarketOwner(true);
       }
+
+      checkEmailVerified();
     }
   }, [market]);
 
@@ -132,6 +137,12 @@ function MarketPage({ marketId, user }) {
     setIsLoading(false);
   }
 
+  async function checkEmailVerified() {
+    if (userAttributes) {
+      setIsEmailVerified(userAttributes.email_verified);
+    }
+  }
+
   return isLoading ? (
     <Loading fullscreen={true} />
   ) : (
@@ -145,7 +156,7 @@ function MarketPage({ marketId, user }) {
       <div className="items-center pt-2">
         <span style={{ color: "var(--lightSquidInk)", paddingBottom: "1em" }}>
           <Icon className="icon" name="date" />
-          {market.createdAt}
+          {formatProductDate(market.createdAt)}
         </span>
       </div>
 
@@ -160,7 +171,13 @@ function MarketPage({ marketId, user }) {
             }
             name="1"
           >
-            <NewProduct marketId={marketId} />
+            {isEmailVerified ? (
+              <NewProduct user={user} marketId={marketId} />
+            ) : (
+              <Link to="/profile" className="header">
+                Verify Your Email Before Adding Product{" "}
+              </Link>
+            )}
           </Tabs.Pane>
         )}
         {/* product list */}

@@ -224,12 +224,12 @@ export const updateUser = /* GraphQL */ `
     }
   }
 `;
-export const reateOrder = /* GraphQL */ `
-  mutation ReateOrder(
+export const createOrder = /* GraphQL */ `
+  mutation CreateOrder(
     $input: CreateOrderInput!
     $condition: ModelOrderConditionInput
   ) {
-    reateOrder(input: $input, condition: $condition) {
+    createOrder(input: $input, condition: $condition) {
       id
       product {
         id
