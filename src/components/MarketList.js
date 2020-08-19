@@ -25,13 +25,13 @@ function MarketList({ searchResults }) {
       onSubscriptionMsg={onNewMarket}
     >
       {({ data, loading, errors }) => {
-        console.log("market list page", data);
+        // console.log("market list page", data);
         if (errors.length > 0) return <Error errors={errors} />;
         if (loading || !data.listMarkets) return <Loading fullscreen={true} />;
         const markets =
           searchResults.length > 0 ? searchResults : data.listMarkets.items;
 
-        // console.log("list markets items", data.listMarkets.items);
+        console.log("list markets items", data.listMarkets.items);
 
         return (
           <>
