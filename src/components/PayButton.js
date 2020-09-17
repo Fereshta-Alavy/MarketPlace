@@ -2,7 +2,8 @@ import React from "react";
 import { Notification, Message } from "element-react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getUser } from "../graphql/queries";
-import { createOrder } from "../graphql/mutations";
+import { createOrder, updateProduct } from "../graphql/mutations";
+
 import StripeCheckout from "react-stripe-checkout";
 import { history } from "../App";
 import { type } from "os";
@@ -37,30 +38,39 @@ function PayButton({ product, userAttributes }) {
     try {
       const ownerEmail = await getOwnerEmail(product.owner);
       console.log(ownerEmail);
+      console.log(userAttributes.email);
       const result = await API.post("shoplambda", "/charge", {
         body: {
-          token,
-          charge: {
-            currency: stripeConfig.currency,
-            amount: product.price,
-            description: product.description,
-            pickUpAddress: product.pickUpAddress
-          },
+          // token,
+          // charge: {
+          //   currency: stripeConfig.currency,
+          //   amount: product.price,
+          //   description: product.description,
+          //   pickUpAddress: product.pickUpAddress
+          // },
+          description: product.description,
+          pickUpAddress: product.pickUpAddress,
           email: {
             customerEmail: userAttributes.email,
             ownerEmail
           }
         }
       });
-      console.log(result);
-      if (result.charge.status === "succeeded") {
+
+      if (result.message === "Order processed successfully") {
         // let shippingAddress = null;
         console.log();
         // if (product.shipped) {
         //   shippingAddress = createShippingAddress(result.charge.source);
         // }
-
-        const input = {
+        let input = {
+          id: product.id,
+          productOrdered: true
+        };
+        const orderstatus = await API.graphql(
+          graphqlOperation(updateProduct, { input })
+        );
+        input = {
           orderUserId: userAttributes.sub,
           orderProductId: product.id
         };
@@ -94,18 +104,21 @@ function PayButton({ product, userAttributes }) {
     }
   }
   return (
-    <StripeCheckout
-      token={handleCharge}
-      email={userAttributes && userAttributes.email}
-      name={product.description}
-      amount={product.price}
-      currency={stripeConfig.currency}
-      stripeKey={stripeConfig.publishableAPIKey}
-      // shippingAddress={product.shipped}
-      // billingAddress={product.shipped}
-      locale="auto"
-      allowRememberMe={false}
-    />
+    // <StripeCheckout
+    //   token={handleCharge}
+    //   email={userAttributes && userAttributes.email}
+    //   name={product.description}
+    //   amount={product.price}
+    //   currency={stripeConfig.currency}
+    //   stripeKey={stripeConfig.publishableAPIKey}
+    //   // shippingAddress={product.shipped}
+    //   // billingAddress={product.shipped}
+    //   locale="auto"
+    //   allowRememberMe={false}
+    // />
+    <div>
+      <button onClick={handleCharge}>Order</button>
+    </div>
   );
 }
 

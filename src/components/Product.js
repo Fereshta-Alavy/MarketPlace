@@ -17,6 +17,9 @@ function Product({ product, key }) {
   const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+  const [productStatusDialog, setProductStatusDialog] = useState(false);
+  const [productPickedUp, setProductPickedUp] = useState(false);
+  const [isPickedUp, setIsPickedUp] = useState(false);
   const [isProductOwner, setIsProductOwner] = useState(false);
   const [isShown, setIsShown] = useState(false);
 
@@ -34,6 +37,7 @@ function Product({ product, key }) {
       const result = await API.graphql(
         graphqlOperation(updateProduct, { input })
       );
+      console.log(result);
       Notification({
         title: "Success",
         message: "Product Updated Successfully",
@@ -63,6 +67,45 @@ function Product({ product, key }) {
       console.error(err);
     }
   }
+
+  async function handlePickUpProduct(productId) {
+    try {
+      setProductPickedUp(true);
+      const input = {
+        id: productId,
+        productPickedUp: productPickedUp
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(updateProduct, { input })
+      );
+      // setIsPickedUp(result.data.updateProduct.productPickedUp);
+      // console.log(result.data.updateProduct.productPickedUp);
+      // setProductStatusDialog(false);
+    } catch (err) {
+      console.error(`failed to update product with Id: ${product.id}`, err);
+    }
+  }
+
+  async function handleNoShow(productId) {
+    try {
+      setProductPickedUp(false);
+      const input = {
+        id: productId,
+        productPickedUp,
+        productOrdered: false
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(updateProduct, { input })
+      );
+      // setIsPickedUp(result.data.updateProduct.productPickedUp);
+      console.log(result);
+    } catch (err) {
+      console.error(`failed to update product with Id: ${product.id}`, err);
+    }
+  }
+
   return (
     <UserContext.Consumer>
       {({ user, userAttributes }) => {
@@ -71,7 +114,7 @@ function Product({ product, key }) {
         }
         const isEmailVerified = userAttributes && userAttributes.email_verified;
         // const isProductOwner = user && user.attributes.sub === product.owner;
-        console.log("in the product page", product);
+        // console.log("in the product page", product);
         return (
           <div className="card-container">
             <Card bodyStyle={{ padding: 0, minWidth: "200px" }}>
@@ -259,6 +302,62 @@ function Product({ product, key }) {
                       type="danger"
                       icon="delete"
                     ></Button>
+                  </Popover>
+
+                  <Popover
+                    placement="top"
+                    width="160px"
+                    trigger="click"
+                    visible={productStatusDialog}
+                    content={
+                      <>
+                        <p>Was the product pick up by customer?</p>
+                        <div className="text-right">
+                          <Button
+                            size="mini"
+                            type="text"
+                            className="m-1"
+                            onClick={() => setProductStatusDialog(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            size="mini"
+                            type="text"
+                            className="m-1"
+                            onClick={() => handlePickUpProduct(product.id)}
+                          >
+                            PickedUp
+                          </Button>
+                          <Button
+                            size="mini"
+                            type="primary"
+                            className="m-1"
+                            onClick={() => handleNoShow(product.id)}
+                          >
+                            NoShow
+                          </Button>
+                        </div>
+                      </>
+                    }
+                  >
+                    {productPickedUp ? (
+                      <Button
+                        onClick={() => setProductStatusDialog(true)}
+                        type="warning"
+                        className="m-1"
+                      >
+                        Picked Up
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => setProductStatusDialog(true)}
+                        type="primary"
+                        className="m-1"
+                      >
+                        Item Status
+                      </Button>
+                    )}
                   </Popover>
                 </>
               )}

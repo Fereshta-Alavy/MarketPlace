@@ -20,7 +20,7 @@ function HomePage() {
       console.log("Latitude:" + position.coords.latitude);
       console.log("Longitude:" + position.coords.longitude);
     });
-  });
+  }, []);
 
   function handleSearchChange(searchTerm) {
     setSearchTerm(searchTerm);

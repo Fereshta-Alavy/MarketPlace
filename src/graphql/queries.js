@@ -18,6 +18,8 @@ export const getMarket = /* GraphQL */ `
           owner
           pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -80,6 +82,8 @@ export const getProduct = /* GraphQL */ `
       owner
       pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -115,6 +119,8 @@ export const listProducts = /* GraphQL */ `
         owner
         pickUpTime
         createdAt
+        productPickedUp
+        productOrdered
         updatedAt
       }
       nextToken
@@ -136,6 +142,8 @@ export const getUser = /* GraphQL */ `
         }
         nextToken
       }
+      paymentCardId
+      customerId
       createdAt
       updatedAt
     }

@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 const listMarkets = `query ListMarkets(
     $filter: ModelMarketFilterInput
     $limit: Int
-    $nextToken: String
+    $nextToken: String,
   ) {
     listMarkets(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
@@ -25,6 +25,7 @@ const listMarkets = `query ListMarkets(
             shipped
             pickUpAddress
             pickUpTime
+            productOrdered
             lat
             lng
             owner

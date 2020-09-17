@@ -21,6 +21,8 @@ export const createMarket = /* GraphQL */ `
           owner
           pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -52,6 +54,8 @@ export const updateMarket = /* GraphQL */ `
           owner
           pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -83,6 +87,8 @@ export const deleteMarket = /* GraphQL */ `
           owner
           pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -126,6 +132,8 @@ export const createProduct = /* GraphQL */ `
       owner
       pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -162,6 +170,8 @@ export const updateProduct = /* GraphQL */ `
       owner
       pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -198,6 +208,8 @@ export const deleteProduct = /* GraphQL */ `
       owner
       pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -220,6 +232,8 @@ export const registerUser = /* GraphQL */ `
         }
         nextToken
       }
+      paymentCardId
+      customerId
       createdAt
       updatedAt
     }
@@ -243,6 +257,8 @@ export const updateUser = /* GraphQL */ `
         }
         nextToken
       }
+      paymentCardId
+      customerId
       createdAt
       updatedAt
     }
@@ -279,6 +295,8 @@ export const createOrder = /* GraphQL */ `
         owner
         pickUpTime
         createdAt
+        productPickedUp
+        productOrdered
         updatedAt
       }
       user {
@@ -289,6 +307,8 @@ export const createOrder = /* GraphQL */ `
         orders {
           nextToken
         }
+        paymentCardId
+        customerId
         createdAt
         updatedAt
       }
