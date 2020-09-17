@@ -15,8 +15,14 @@ export const createMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -42,8 +48,14 @@ export const updateMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -69,8 +81,14 @@ export const deleteMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -108,8 +126,14 @@ export const createProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -140,8 +164,14 @@ export const updateProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -172,8 +202,14 @@ export const deleteProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -196,6 +232,8 @@ export const registerUser = /* GraphQL */ `
         }
         nextToken
       }
+      paymentCardId
+      customerId
       createdAt
       updatedAt
     }
@@ -219,6 +257,8 @@ export const updateUser = /* GraphQL */ `
         }
         nextToken
       }
+      paymentCardId
+      customerId
       createdAt
       updatedAt
     }
@@ -249,8 +289,14 @@ export const createOrder = /* GraphQL */ `
         }
         price
         shipped
+        pickUpAddress
+        lat
+        lng
         owner
+        pickUpTime
         createdAt
+        productPickedUp
+        productOrdered
         updatedAt
       }
       user {
@@ -261,15 +307,10 @@ export const createOrder = /* GraphQL */ `
         orders {
           nextToken
         }
+        paymentCardId
+        customerId
         createdAt
         updatedAt
-      }
-      shippingAddress {
-        city
-        country
-        address_line1
-        address_state
-        address_zip
       }
       createdAt
       updatedAt

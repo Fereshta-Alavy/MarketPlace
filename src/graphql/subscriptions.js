@@ -12,8 +12,14 @@ export const onCreateMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -36,8 +42,14 @@ export const onUpdateMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -60,8 +72,14 @@ export const onDeleteMarket = /* GraphQL */ `
           description
           price
           shipped
+          pickUpAddress
+          lat
+          lng
           owner
+          pickUpTime
           createdAt
+          productPickedUp
+          productOrdered
           updatedAt
         }
         nextToken
@@ -96,8 +114,14 @@ export const onCreateProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -125,8 +149,14 @@ export const onUpdateProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }
@@ -154,8 +184,14 @@ export const onDeleteProduct = /* GraphQL */ `
       }
       price
       shipped
+      pickUpAddress
+      lat
+      lng
       owner
+      pickUpTime
       createdAt
+      productPickedUp
+      productOrdered
       updatedAt
     }
   }

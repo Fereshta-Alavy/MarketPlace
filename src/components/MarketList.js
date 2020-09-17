@@ -2,11 +2,47 @@ import React from "react";
 import { Loading, Card, Icon, Tag } from "element-react";
 import { Connect } from "aws-amplify-react";
 import { graphqlOperation } from "aws-amplify";
-import { listMarkets } from "../graphql/queries";
+// import { listMarkets } from "../graphql/queries";
 import { onCreateMarket } from "../graphql/subscriptions";
 import Error from "./Error";
 
 import { Link } from "react-router-dom";
+
+const listMarkets = `query ListMarkets(
+    $filter: ModelMarketFilterInput
+    $limit: Int
+    $nextToken: String,
+  ) {
+    listMarkets(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        products {
+          items {
+            id
+            description
+            price
+            shipped
+            pickUpAddress
+            pickUpTime
+            productOrdered
+            lat
+            lng
+            owner
+            createdAt
+            updatedAt
+          }
+          nextToken
+        }
+        tags
+        owner
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 
 function MarketList({ searchResults }) {
   function onNewMarket(preQuery, newData) {

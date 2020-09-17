@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { converCentsToDollars, formatOrderDate } from "../utils";
+import CardSection from "../components/CardSection";
 // prettier-ignore
 import { Table, Button, Notification, MessageBox, Message, Tabs, Icon, Form, Dialog, Input, Card, Tag } from 'element-react'
 
@@ -10,6 +11,8 @@ const getUser = `query GetUser($id: ID!) {
       username
       email
       registered
+      customerId
+      paymentCardId
       orders (sortDirection : DESC , limit : 999 ){
         items {
           id
@@ -22,13 +25,7 @@ const getUser = `query GetUser($id: ID!) {
             createdAt
             description
           }
-        shippingAddress {
-          city
-          country
-          address_line1
-          address_state
-          address_zip
-        }
+        
         }
         nextToken
       }
@@ -42,6 +39,9 @@ function ProfilePage({ user, userAttributes }) {
   const [verificationForm, setVerificationForm] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [emailDialog, setEmailDialog] = useState(false);
+  const [PaymentDialog, setPaymentDialog] = useState(false);
+  const [PaymentCardId, setPaymentCardId] = useState("");
+
   const [columns, setColumns] = useState([
     { prop: "name", width: "150px" },
     { prop: "value", width: "330px" },
@@ -52,6 +52,13 @@ function ProfilePage({ user, userAttributes }) {
         if (row.name === "Email") {
           const emailVerified = userAttributes.email_verified;
           return emailVerified ? (
+            <Tag type="success">verified</Tag>
+          ) : (
+            <Tag type="danger">Unverified</Tag>
+          );
+        }
+        if (row.name === "Payment") {
+          return PaymentCardId ? (
             <Tag type="success">verified</Tag>
           ) : (
             <Tag type="danger">Unverified</Tag>
@@ -74,6 +81,18 @@ function ProfilePage({ user, userAttributes }) {
               </Button>
             );
 
+          case "Payment":
+            return (
+              <Button
+                onClick={() => setPaymentDialog(true)}
+                disabled={PaymentCardId}
+                type="info"
+                size="small"
+              >
+                Add Card
+              </Button>
+            );
+
           case "Delete Profile":
             return (
               <Button onClick={handleDeleteProfile} type="danger" size="small">
@@ -91,13 +110,24 @@ function ProfilePage({ user, userAttributes }) {
   useEffect(() => {
     if (userAttributes) {
       getUserOrders(userAttributes.sub);
+      getUserPaymentId(userAttributes.sub);
     }
-  });
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("payment card id", PaymentCardId);
+  // }, [PaymentCardId]);
 
   async function getUserOrders(userId) {
     const input = { id: userId };
     const result = await API.graphql(graphqlOperation(getUser, input));
     setOrders(result.data.getUser.orders.items);
+  }
+
+  async function getUserPaymentId(userId) {
+    const input = { id: userId };
+    const result = await API.graphql(graphqlOperation(getUser, input));
+    setPaymentCardId(result.data.getUser.paymentCardId);
   }
 
   async function handleUpdateEmail() {
@@ -207,6 +237,10 @@ function ProfilePage({ user, userAttributes }) {
                   value: userAttributes.email
                 },
                 {
+                  name: "Payment",
+                  value: PaymentCardId
+                },
+                {
                   name: "Phone Number",
                   value: userAttributes.phone_number
                 },
@@ -240,26 +274,32 @@ function ProfilePage({ user, userAttributes }) {
                     <p>Product description : {order.product.description}</p>
                     <p>Price : ${converCentsToDollars(order.product.price)}</p>
                     <p>Purchased On : {formatOrderDate(order.createdAt)}</p>
-                    {order.shippingAddress !== null && (
-                      <>
-                        shipping Address
-                        <div className="ml-2">
-                          <p>{order.shippingAddress.address_line1}</p>
-                          <p>
-                            {order.shippingAddress.city},{" "}
-                            {order.shippingAddress.address_state}{" "}
-                            {order.shippingAddress.country}{" "}
-                            {order.shippingAddress.address_zip}
-                          </p>
-                        </div>
-                      </>
-                    )}
                   </pre>
                 </Card>
               </div>
             ))}
           </Tabs.Pane>
         </Tabs>
+
+        {/* payment Dialog */}
+        <Dialog
+          size="large"
+          customClass="dialog"
+          title="Add Payment"
+          visible={PaymentDialog}
+          onCancel={() => setPaymentDialog(false)}
+        >
+          <Dialog.Body>
+            <Form labelPosition="top">
+              <Form.Item label="Payment">
+                <CardSection
+                  userAttributes={user}
+                  setPaymentCardId={setPaymentCardId}
+                />
+              </Form.Item>
+            </Form>
+          </Dialog.Body>
+        </Dialog>
 
         {/* Email Dialog */}
         <Dialog

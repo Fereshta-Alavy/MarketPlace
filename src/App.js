@@ -9,6 +9,7 @@ import { Router, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MarketPage from "./pages/MarketPage";
 import ProfilePage from "./pages/ProfilePage";
+import MapContainer from "./components/MapContainer";
 import Navbar from "./components/Navbar";
 import createBrowserHistory from "history/createBrowserHistory";
 
@@ -121,6 +122,12 @@ function App() {
                   marketId={match.params.marketId}
                   userAttributes={userAttributes}
                 />
+              )}
+            />
+            <Route
+              path="/map"
+              component={() => (
+                <MapContainer user={user} userAttributes={userAttributes} />
               )}
             />
           </div>

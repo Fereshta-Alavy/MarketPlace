@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { S3Image } from "aws-amplify-react";
-import { converCentsToDollars } from "../utils";
+import { converCentsToDollars, formatOrderDate } from "../utils";
 import { UserContext } from "../App";
 import { updateProduct, deleteProduct } from "../graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
 import { Link } from "react-router-dom";
+
 // prettier-ignore
 import { Notification, Popover, Button, Dialog, Card, Form, Input, Radio, Icon } from "element-react";
 import PayButton from "./PayButton";
+import { color } from "@material-ui/system";
 
 function Product({ product, key }) {
   const [updateProductDialog, setUpdateProductDialog] = useState(false);
@@ -15,7 +17,11 @@ function Product({ product, key }) {
   const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+  const [productStatusDialog, setProductStatusDialog] = useState(false);
+  const [productPickedUp, setProductPickedUp] = useState(false);
+  const [isPickedUp, setIsPickedUp] = useState(false);
   const [isProductOwner, setIsProductOwner] = useState(false);
+  const [isShown, setIsShown] = useState(false);
 
   async function handleUpdateProduct(productId) {
     try {
@@ -31,6 +37,7 @@ function Product({ product, key }) {
       const result = await API.graphql(
         graphqlOperation(updateProduct, { input })
       );
+      console.log(result);
       Notification({
         title: "Success",
         message: "Product Updated Successfully",
@@ -60,6 +67,45 @@ function Product({ product, key }) {
       console.error(err);
     }
   }
+
+  async function handlePickUpProduct(productId) {
+    try {
+      setProductPickedUp(true);
+      const input = {
+        id: productId,
+        productPickedUp: productPickedUp
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(updateProduct, { input })
+      );
+      // setIsPickedUp(result.data.updateProduct.productPickedUp);
+      // console.log(result.data.updateProduct.productPickedUp);
+      // setProductStatusDialog(false);
+    } catch (err) {
+      console.error(`failed to update product with Id: ${product.id}`, err);
+    }
+  }
+
+  async function handleNoShow(productId) {
+    try {
+      setProductPickedUp(false);
+      const input = {
+        id: productId,
+        productPickedUp,
+        productOrdered: false
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(updateProduct, { input })
+      );
+      // setIsPickedUp(result.data.updateProduct.productPickedUp);
+      console.log(result);
+    } catch (err) {
+      console.error(`failed to update product with Id: ${product.id}`, err);
+    }
+  }
+
   return (
     <UserContext.Consumer>
       {({ user, userAttributes }) => {
@@ -68,7 +114,7 @@ function Product({ product, key }) {
         }
         const isEmailVerified = userAttributes && userAttributes.email_verified;
         // const isProductOwner = user && user.attributes.sub === product.owner;
-        // console.log("in the product page", isProductOwner);
+        // console.log("in the product page", product);
         return (
           <div className="card-container">
             <Card bodyStyle={{ padding: 0, minWidth: "200px" }}>
@@ -79,19 +125,113 @@ function Product({ product, key }) {
 
               <div className="card-body">
                 <h3 className="m-0">{product.description}</h3>
-                <div className="item-center">
-                  <img
-                    src={`${
-                      product.shipped
-                        ? "https://img.icons8.com/offices/30/000000/mailbox-opened-flag-down.png"
-                        : "https://img.icons8.com/material-sharp/24/000000/important-mail.png"
-                    }`}
-                    alt=""
-                    className="icon"
-                  />
-                  {product.shipped ? "shipped" : "emailed"}
-                </div>
+                <Popover
+                  placement="top"
+                  width="160px"
+                  height="200px"
+                  trigger="click"
+                  visible={deleteProductDialog}
+                  content={
+                    <>
+                      <p>This is the Map for Pick up place!</p>
+                      {deleteProductDialog && (
+                        <div>
+                          <iframe
+                            width="300"
+                            height="130"
+                            frameborder="0"
+                            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDKPt9VC9B2xshNU1z56LpqN4VzuLCT7GU&q=${product.pickUpAddress}`}
+                            allowfullscreen
+                          ></iframe>
+                        </div>
+                      )}
+
+                      <div className="text-right">
+                        <Button
+                          size="mini"
+                          type="text"
+                          className="m-1"
+                          onClick={() => setDeleteProductDialog(false)}
+                        >
+                          Ok
+                        </Button>
+                      </div>
+                    </>
+                  }
+                >
+                  <div
+                    className="text-right"
+                    onMouseEnter={() => setIsShown(true)}
+                    onMouseLeave={() => setIsShown(false)}
+                    onClick={() => setDeleteProductDialog(true)}
+                  >
+                    {/* <img
+                      src="https://img.icons8.com/small/13/000000/worldwide-location.png"
+                      alt=""
+                      className="icon"
+                    /> */}
+                    {isShown ? (
+                      <h1
+                        style={{
+                          color: "blue",
+                          font: "small-caption",
+                          fontSize: 13
+                        }}
+                      >
+                        <h1
+                          style={{
+                            color: "black",
+                            font: "bold",
+                            fontSize: 13
+                          }}
+                        >
+                          PickUp Adress:
+                        </h1>{" "}
+                        {product.pickUpAddress}
+                      </h1>
+                    ) : (
+                      <h1
+                        style={{
+                          color: "black",
+                          font: "small-caption",
+                          fontSize: 13
+                        }}
+                      >
+                        <h1
+                          style={{
+                            color: "black",
+                            font: "bold",
+                            fontSize: 13
+                          }}
+                        >
+                          PickUp Adress:
+                        </h1>{" "}
+                        {product.pickUpAddress}
+                      </h1>
+                    )}
+                  </div>
+                </Popover>
+
                 <div className="text-right">
+                  {" "}
+                  <h1
+                    style={{
+                      color: "black",
+                      font: "small-caption",
+                      fontSize: 13
+                    }}
+                  >
+                    <h1
+                      style={{
+                        color: "black",
+                        font: "bold",
+                        fontSize: 13
+                      }}
+                    >
+                      PickUp Time:
+                    </h1>{" "}
+                    {formatOrderDate(product.pickUpTime)}
+                  </h1>
                   <span className="mx-1">
                     {" "}
                     ${converCentsToDollars(product.price)}
@@ -162,6 +302,62 @@ function Product({ product, key }) {
                       type="danger"
                       icon="delete"
                     ></Button>
+                  </Popover>
+
+                  <Popover
+                    placement="top"
+                    width="160px"
+                    trigger="click"
+                    visible={productStatusDialog}
+                    content={
+                      <>
+                        <p>Was the product pick up by customer?</p>
+                        <div className="text-right">
+                          <Button
+                            size="mini"
+                            type="text"
+                            className="m-1"
+                            onClick={() => setProductStatusDialog(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            size="mini"
+                            type="text"
+                            className="m-1"
+                            onClick={() => handlePickUpProduct(product.id)}
+                          >
+                            PickedUp
+                          </Button>
+                          <Button
+                            size="mini"
+                            type="primary"
+                            className="m-1"
+                            onClick={() => handleNoShow(product.id)}
+                          >
+                            NoShow
+                          </Button>
+                        </div>
+                      </>
+                    }
+                  >
+                    {productPickedUp ? (
+                      <Button
+                        onClick={() => setProductStatusDialog(true)}
+                        type="warning"
+                        className="m-1"
+                      >
+                        Picked Up
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => setProductStatusDialog(true)}
+                        type="primary"
+                        className="m-1"
+                      >
+                        Item Status
+                      </Button>
+                    )}
                   </Popover>
                 </>
               )}
