@@ -16,7 +16,7 @@ function Navbar({ user, handleSignOut }) {
                 className="app-icon"
                 alt=""
               ></img>
-              AmplifyAgora
+              freebie
             </span>
           </NavLink>
         </Nav.Item>

@@ -41,8 +41,8 @@ function ProfilePage({ user, userAttributes }) {
   const [emailDialog, setEmailDialog] = useState(false);
   const [PaymentDialog, setPaymentDialog] = useState(false);
   const [PaymentCardId, setPaymentCardId] = useState("");
-
-  const [columns, setColumns] = useState([
+  console.log("inside profile page", PaymentCardId);
+  const columns = [
     { prop: "name", width: "150px" },
     { prop: "value", width: "330px" },
     {
@@ -105,7 +105,7 @@ function ProfilePage({ user, userAttributes }) {
         }
       }
     }
-  ]);
+  ];
 
   useEffect(() => {
     if (userAttributes) {
@@ -286,7 +286,7 @@ function ProfilePage({ user, userAttributes }) {
           size="large"
           customClass="dialog"
           title="Add Payment"
-          visible={PaymentDialog}
+          visible={!PaymentCardId}
           onCancel={() => setPaymentDialog(false)}
         >
           <Dialog.Body>

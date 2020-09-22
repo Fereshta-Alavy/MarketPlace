@@ -19,7 +19,6 @@ function Product({ product, key }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [productStatusDialog, setProductStatusDialog] = useState(false);
   const [productPickedUp, setProductPickedUp] = useState(false);
-  const [isPickedUp, setIsPickedUp] = useState(false);
   const [isProductOwner, setIsProductOwner] = useState(false);
   const [isShown, setIsShown] = useState(false);
 
