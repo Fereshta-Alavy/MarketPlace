@@ -10,7 +10,11 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
-const CheckoutForm = ({ userAttributes, setPaymentCardId }) => {
+const CheckoutForm = ({
+  userAttributes,
+  setPaymentCardId,
+  setPaymentDialog
+}) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -40,6 +44,7 @@ const CheckoutForm = ({ userAttributes, setPaymentCardId }) => {
         const result = await API.graphql(
           graphqlOperation(updateUser, { input })
         );
+        setPaymentDialog(false);
         console.log("incard section", result.data.updateUser.paymentCardId);
         setPaymentCardId(result.data.updateUser.paymentCardId);
       } catch (error) {
@@ -67,7 +72,11 @@ const stripePromise = loadStripe(
   "pk_test_51HEiNVIKOoBJNWU6GhmZZtHqaksAbifnsc3aBsjQwXqR5zWs6QIv9AjOKYySbogjWTIecN8rCobYlsUMcJl2J5mb00BDCutme1"
 );
 
-const CardSection = ({ userAttributes, setPaymentCardId }) => {
+const CardSection = ({
+  userAttributes,
+  setPaymentCardId,
+  setPaymentDialog
+}) => {
   const [status, setStatus] = React.useState("ready");
 
   if (status === "success") {
@@ -79,6 +88,7 @@ const CardSection = ({ userAttributes, setPaymentCardId }) => {
       <CheckoutForm
         userAttributes={userAttributes}
         setPaymentCardId={setPaymentCardId}
+        setPaymentDialog={setPaymentDialog}
       />
     </Elements>
   );

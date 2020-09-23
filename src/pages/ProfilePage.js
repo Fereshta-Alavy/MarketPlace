@@ -21,7 +21,6 @@ const getUser = `query GetUser($id: ID!) {
           product {
             id
             owner
-            price
             createdAt
             description
           }
@@ -41,7 +40,7 @@ function ProfilePage({ user, userAttributes }) {
   const [emailDialog, setEmailDialog] = useState(false);
   const [PaymentDialog, setPaymentDialog] = useState(false);
   const [PaymentCardId, setPaymentCardId] = useState("");
-  console.log("inside profile page", PaymentCardId);
+  console.log("inside profile page", orders);
   const columns = [
     { prop: "name", width: "150px" },
     { prop: "value", width: "330px" },
@@ -272,7 +271,7 @@ function ProfilePage({ user, userAttributes }) {
                   <pre>
                     <p>Order id : {order.id}</p>
                     <p>Product description : {order.product.description}</p>
-                    <p>Price : ${converCentsToDollars(order.product.price)}</p>
+                    {/* <p>Price : ${converCentsToDollars(order.product.price)}</p> */}
                     <p>Purchased On : {formatOrderDate(order.createdAt)}</p>
                   </pre>
                 </Card>
@@ -286,7 +285,7 @@ function ProfilePage({ user, userAttributes }) {
           size="large"
           customClass="dialog"
           title="Add Payment"
-          visible={!PaymentCardId}
+          visible={PaymentDialog}
           onCancel={() => setPaymentDialog(false)}
         >
           <Dialog.Body>
@@ -295,6 +294,7 @@ function ProfilePage({ user, userAttributes }) {
                 <CardSection
                   userAttributes={user}
                   setPaymentCardId={setPaymentCardId}
+                  setPaymentDialog={setPaymentDialog}
                 />
               </Form.Item>
             </Form>

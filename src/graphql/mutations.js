@@ -13,7 +13,6 @@ export const createMarket = /* GraphQL */ `
         items {
           id
           description
-          price
           shipped
           pickUpAddress
           lat
@@ -46,7 +45,6 @@ export const updateMarket = /* GraphQL */ `
         items {
           id
           description
-          price
           shipped
           pickUpAddress
           lat
@@ -79,7 +77,6 @@ export const deleteMarket = /* GraphQL */ `
         items {
           id
           description
-          price
           shipped
           pickUpAddress
           lat
@@ -124,7 +121,6 @@ export const createProduct = /* GraphQL */ `
         region
         key
       }
-      price
       shipped
       pickUpAddress
       lat
@@ -162,7 +158,6 @@ export const updateProduct = /* GraphQL */ `
         region
         key
       }
-      price
       shipped
       pickUpAddress
       lat
@@ -200,7 +195,6 @@ export const deleteProduct = /* GraphQL */ `
         region
         key
       }
-      price
       shipped
       pickUpAddress
       lat
@@ -287,7 +281,6 @@ export const createOrder = /* GraphQL */ `
           region
           key
         }
-        price
         shipped
         pickUpAddress
         lat

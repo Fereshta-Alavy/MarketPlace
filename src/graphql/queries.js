@@ -10,7 +10,6 @@ export const getMarket = /* GraphQL */ `
         items {
           id
           description
-          price
           shipped
           pickUpAddress
           lat
@@ -42,14 +41,6 @@ export const listMarkets = /* GraphQL */ `
         id
         name
         products {
-          items {
-            id
-            description
-            price
-            shipped
-            owner
-            createdAt
-          }
           nextToken
         }
         tags
@@ -82,7 +73,6 @@ export const getProduct = /* GraphQL */ `
         region
         key
       }
-      price
       shipped
       pickUpAddress
       lat
@@ -119,7 +109,6 @@ export const listProducts = /* GraphQL */ `
           region
           key
         }
-        price
         shipped
         pickUpAddress
         lat

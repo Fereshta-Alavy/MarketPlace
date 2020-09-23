@@ -14,7 +14,7 @@ const stripeConfig = {
     "pk_test_51HEiNVIKOoBJNWU6GhmZZtHqaksAbifnsc3aBsjQwXqR5zWs6QIv9AjOKYySbogjWTIecN8rCobYlsUMcJl2J5mb00BDCutme1"
 };
 
-function PayButton({ product, userAttributes }) {
+function PayButton({ product, userAttributes, marketId }) {
   async function getOwnerEmail(ownerId) {
     try {
       const input = { id: ownerId };
@@ -48,6 +48,7 @@ function PayButton({ product, userAttributes }) {
           //   description: product.description,
           //   pickUpAddress: product.pickUpAddress
           // },
+          marketId: marketId,
           description: product.description,
           pickUpAddress: product.pickUpAddress,
           email: {

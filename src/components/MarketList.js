@@ -21,7 +21,6 @@ const listMarkets = `query ListMarkets(
           items {
             id
             description
-            price
             shipped
             pickUpAddress
             pickUpTime

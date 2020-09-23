@@ -21,11 +21,12 @@ const getMarket = `query GetMarket($id: ID!) {
         items { 
           id
           description
-          price
+        
           shipped
           pickUpAddress
           pickUpTime
           productOrdered
+          productPickedUp
           lat
           lng
           owner
@@ -200,8 +201,13 @@ function MarketPage({ marketId, user, userAttributes }) {
           <div className="product-list">
             {market.products.items.map(product =>
               product.productOrdered &&
-              user && user.attributes.sub !== product.owner ? null : (
-                <Product key={product.id} product={product} />
+              user &&
+              user.attributes.sub !== product.owner ? null : (
+                <Product
+                  key={product.id}
+                  product={product}
+                  marketId={market.id}
+                />
               )
             )}
           </div>

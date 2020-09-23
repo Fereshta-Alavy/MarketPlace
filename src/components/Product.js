@@ -11,17 +11,38 @@ import { Notification, Popover, Button, Dialog, Card, Form, Input, Radio, Icon }
 import PayButton from "./PayButton";
 import { color } from "@material-ui/system";
 
-function Product({ product, key }) {
+function Product({ product, key, marketId }) {
   const [updateProductDialog, setUpdateProductDialog] = useState(false);
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+  // const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [productStatusDialog, setProductStatusDialog] = useState(false);
-  const [productPickedUp, setProductPickedUp] = useState(false);
+  const [pickedUp, setProductPickedUp] = useState(product.productPickedUp);
   const [isProductOwner, setIsProductOwner] = useState(false);
   const [isShown, setIsShown] = useState(false);
 
+  useEffect(() => {
+    updatePickUp();
+  }, [pickedUp]);
+
+  async function updatePickUp() {
+    try {
+      const input = {
+        id: product.id,
+        productPickedUp: pickedUp
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(updateProduct, { input })
+      );
+      // setIsPickedUp(result.data.updateProduct.productPickedUp);
+      // console.log(result.data.updateProduct.productPickedUp);
+      // setProductStatusDialog(false);
+    } catch (err) {
+      console.error(`failed to update product with Id: ${product.id}`, err);
+    }
+  }
   async function handleUpdateProduct(productId) {
     try {
       setUpdateProductDialog(false);
@@ -29,7 +50,7 @@ function Product({ product, key }) {
       const input = {
         id: productId,
         description,
-        price,
+        // price,
         shipped
       };
 
@@ -68,41 +89,13 @@ function Product({ product, key }) {
   }
 
   async function handlePickUpProduct(productId) {
-    try {
-      setProductPickedUp(true);
-      const input = {
-        id: productId,
-        productPickedUp: productPickedUp
-      };
-
-      const result = await API.graphql(
-        graphqlOperation(updateProduct, { input })
-      );
-      // setIsPickedUp(result.data.updateProduct.productPickedUp);
-      // console.log(result.data.updateProduct.productPickedUp);
-      // setProductStatusDialog(false);
-    } catch (err) {
-      console.error(`failed to update product with Id: ${product.id}`, err);
-    }
+    setProductStatusDialog(false);
+    setProductPickedUp(true);
   }
 
   async function handleNoShow(productId) {
-    try {
-      setProductPickedUp(false);
-      const input = {
-        id: productId,
-        productPickedUp,
-        productOrdered: false
-      };
-
-      const result = await API.graphql(
-        graphqlOperation(updateProduct, { input })
-      );
-      // setIsPickedUp(result.data.updateProduct.productPickedUp);
-      console.log(result);
-    } catch (err) {
-      console.error(`failed to update product with Id: ${product.id}`, err);
-    }
+    setProductStatusDialog(false);
+    setProductPickedUp(false);
   }
 
   return (
@@ -231,15 +224,12 @@ function Product({ product, key }) {
                     </h1>{" "}
                     {formatOrderDate(product.pickUpTime)}
                   </h1>
-                  <span className="mx-1">
-                    {" "}
-                    ${converCentsToDollars(product.price)}
-                  </span>
                   {isEmailVerified ? (
                     !isProductOwner && (
                       <PayButton
                         product={product}
                         userAttributes={userAttributes}
+                        marketId={marketId}
                       />
                     )
                   ) : (
@@ -260,10 +250,11 @@ function Product({ product, key }) {
                     type="warning"
                     icon="edit"
                     className="m-1"
+                    disabled={pickedUp}
                     onClick={() => {
                       setUpdateProductDialog(true);
                       setDescription(product.description);
-                      setPrice(product.price);
+                      // setPrice(product.price);
                       setShipped(product.shipped);
                     }}
                   ></Button>
@@ -340,23 +331,14 @@ function Product({ product, key }) {
                       </>
                     }
                   >
-                    {productPickedUp ? (
-                      <Button
-                        onClick={() => setProductStatusDialog(true)}
-                        type="warning"
-                        className="m-1"
-                      >
-                        Picked Up
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => setProductStatusDialog(true)}
-                        type="primary"
-                        className="m-1"
-                      >
-                        Item Status
-                      </Button>
-                    )}
+                    <Button
+                      onClick={() => setProductStatusDialog(true)}
+                      type="primary"
+                      className="m-1"
+                      disabled={pickedUp || !product.productOrdered}
+                    >
+                      {pickedUp ? "Picked Up" : "Item Status"}
+                    </Button>
                   </Popover>
                 </>
               )}
@@ -381,7 +363,7 @@ function Product({ product, key }) {
                     />
                   </Form.Item>
 
-                  <Form.Item label="Update Price">
+                  {/* <Form.Item label="Update Price">
                     <Input
                       type="number"
                       icon="plus"
@@ -389,7 +371,7 @@ function Product({ product, key }) {
                       value={price}
                       onChange={price => setPrice(price)}
                     />
-                  </Form.Item>
+                  </Form.Item> */}
 
                   <Form.Item label="Update Shipping">
                     <div className="text-center">

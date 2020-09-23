@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 function NewProduct({ marketId, user }) {
   const classes = useStyles();
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+  // const [price, setPrice] = useState("");
   const [shipped, setShipped] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [ImagePreview, setImagePreview] = useState("");
@@ -67,9 +67,10 @@ function NewProduct({ marketId, user }) {
         shipped: shipped,
         pickUpAddress: address,
         pickUpTime: pickUpTime,
+        productPickedUp: false,
         lat: coordinates.lat,
         lng: coordinates.lng,
-        price: convertDollarToCents(price),
+        // price: convertDollarToCents(price),
         file
       };
 
@@ -84,7 +85,7 @@ function NewProduct({ marketId, user }) {
       });
 
       setDescription("");
-      setPrice("");
+      // setPrice("");
       setShipped(false);
       setImagePreview("");
       setImage("");
@@ -110,7 +111,7 @@ function NewProduct({ marketId, user }) {
             />
           </Form.Item>
 
-          <Form.Item label="Set Product Price">
+          {/* <Form.Item label="Set Product Price">
             <Input
               type="number"
               icon="plus"
@@ -118,7 +119,7 @@ function NewProduct({ marketId, user }) {
               value={price}
               onChange={price => setPrice(price)}
             />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label="Choose PickUp Place By Searching For a Public Around You!">
             <div className="text-center">
@@ -204,7 +205,6 @@ function NewProduct({ marketId, user }) {
             <Button
               disabled={
                 !description ||
-                !price ||
                 !image ||
                 isUploading ||
                 !pickUpTime ||
