@@ -60,13 +60,10 @@ function MarketList({ searchResults }) {
       onSubscriptionMsg={onNewMarket}
     >
       {({ data, loading, errors }) => {
-        // console.log("market list page", data);
         if (errors.length > 0) return <Error errors={errors} />;
         if (loading || !data.listMarkets) return <Loading fullscreen={true} />;
         const markets =
           searchResults.length > 0 ? searchResults : data.listMarkets.items;
-
-        console.log("list markets items", data.listMarkets.items);
 
         return (
           <>
@@ -86,47 +83,46 @@ function MarketList({ searchResults }) {
                 Markets
               </h2>
             )}
-            {markets.map(market => (
-              <div className=" my-2" key={market.id}>
-                <Card
-                  bodyStyle={{
-                    padding: "0.7em",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <div>
-                    <span className="flex">
-                      <Link className="link" to={`/markets/${market.id}`}>
-                        {market.name}
-                      </Link>
-                      <span style={{ color: "var(--darkAmazonOrange)" }}>
+            <div className="product-list">
+              {markets.map(market => (
+                <div className=" my-2" key={market.id}>
+                  <Card
+                    bodyStyle={{
+                      padding: "0.7em",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <div>
+                      <span className="flex">
+                        <Link className="link" to={`/markets/${market.id}`}>
+                          {market.name}
+                        </Link>
+                        {/* <span style={{ color: "var(--darkAmazonOrange)" }}>
                         {market.products.items
                           ? market.products.items.length
                           : 0}
-                        {/* {0} */}
+                
+                      </span> */}
+                        <img src="https://img.icons8.com/cotton/20/000000/online-order.png" />
                       </span>
-                      <img
-                        src="https://img.icons8.com/nolan/30/shopping-cart-promotion.png"
-                        alt=""
-                      />
-                    </span>
-                    <div style={{ color: "var(--lightSquidInk)" }}>
+                      {/* <div style={{ color: "var(--lightSquidInk)" }}>
                       {market.owner}
+                    </div> */}
                     </div>
-                  </div>
-                  <div>
-                    {market.tags &&
-                      market.tags.map(tag => (
-                        <Tag key={tag} type="danger" className="mx-1">
-                          {tag}
-                        </Tag>
-                      ))}
-                  </div>
-                </Card>
-              </div>
-            ))}
+                    <div>
+                      {market.tags &&
+                        market.tags.map(tag => (
+                          <Tag key={tag} type="danger" className="mx-1">
+                            {tag}
+                          </Tag>
+                        ))}
+                    </div>
+                  </Card>
+                </div>
+              ))}
+            </div>
           </>
         );
       }}

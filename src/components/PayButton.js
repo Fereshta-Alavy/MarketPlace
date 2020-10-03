@@ -37,8 +37,7 @@ function PayButton({ product, userAttributes, marketId }) {
   async function handleCharge(token) {
     try {
       const ownerEmail = await getOwnerEmail(product.owner);
-      console.log(ownerEmail);
-      console.log(userAttributes.email);
+
       const result = await API.post("shoplambda", "/charge", {
         body: {
           // token,
@@ -59,11 +58,6 @@ function PayButton({ product, userAttributes, marketId }) {
       });
 
       if (result.message === "Order processed successfully") {
-        // let shippingAddress = null;
-        console.log();
-        // if (product.shipped) {
-        //   shippingAddress = createShippingAddress(result.charge.source);
-        // }
         let input = {
           id: product.id,
           productOrdered: true
@@ -78,7 +72,6 @@ function PayButton({ product, userAttributes, marketId }) {
         const order = await API.graphql(
           graphqlOperation(createOrder, { input })
         );
-        console.log({ order });
         Notification({
           title: "success",
           message: `${result.message}`,

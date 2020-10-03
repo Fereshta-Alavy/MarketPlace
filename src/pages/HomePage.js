@@ -17,8 +17,6 @@ function HomePage() {
         lng: position.coords.longitude
       };
       setUserPosition(pos);
-      console.log("Latitude:" + position.coords.latitude);
-      console.log("Longitude:" + position.coords.longitude);
     });
   }, []);
 
@@ -54,13 +52,13 @@ function HomePage() {
   }
   return (
     <>
-      <NewMarket
+      {/* <NewMarket
         searchTerm={searchTerm}
         isSearching={isSearching}
         handleSearchChange={handleSearchChange}
         handleClearSearch={handleClearSearch}
         handleSearch={handleSearch}
-      />
+      /> */}
       <MarketList searchResults={searchResults} />
     </>
   );

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { S3Image } from "aws-amplify-react";
-import { converCentsToDollars, formatOrderDate } from "../utils";
+import {
+  converCentsToDollars,
+  formatOrderDate,
+  formatProductDate
+} from "../utils";
 import { UserContext } from "../App";
 import { updateProduct, deleteProduct } from "../graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
@@ -21,7 +25,7 @@ function Product({ product, key, marketId }) {
   const [pickedUp, setProductPickedUp] = useState(product.productPickedUp);
   const [isProductOwner, setIsProductOwner] = useState(false);
   const [isShown, setIsShown] = useState(false);
-
+  console.log(product);
   useEffect(() => {
     updatePickUp();
   }, [pickedUp]);
@@ -36,9 +40,6 @@ function Product({ product, key, marketId }) {
       const result = await API.graphql(
         graphqlOperation(updateProduct, { input })
       );
-      // setIsPickedUp(result.data.updateProduct.productPickedUp);
-      // console.log(result.data.updateProduct.productPickedUp);
-      // setProductStatusDialog(false);
     } catch (err) {
       console.error(`failed to update product with Id: ${product.id}`, err);
     }
@@ -57,7 +58,6 @@ function Product({ product, key, marketId }) {
       const result = await API.graphql(
         graphqlOperation(updateProduct, { input })
       );
-      console.log(result);
       Notification({
         title: "Success",
         message: "Product Updated Successfully",
@@ -105,8 +105,6 @@ function Product({ product, key, marketId }) {
           setIsProductOwner(true);
         }
         const isEmailVerified = userAttributes && userAttributes.email_verified;
-        // const isProductOwner = user && user.attributes.sub === product.owner;
-        // console.log("in the product page", product);
         return (
           <div className="card-container">
             <Card bodyStyle={{ padding: 0, minWidth: "200px" }}>

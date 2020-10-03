@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PhotoPicker } from "aws-amplify-react";
 import { Auth, Storage, API, graphqlOperation } from "aws-amplify";
 import { createProduct } from "../graphql/mutations";
 import { convertDollarToCents, formatOrderDate } from "../utils";
 import PickUpPlace from "./PickUpPlace";
+import { useHistory } from "react-router-dom";
+
 // prettier-ignore
-import { Form, Button, Input, Notification, Radio, Progress } from "element-react";
+import { Form, Button, Input,  Progress} from "element-react";
+import { Link } from "react-router-dom";
 import aws_exports from "../aws-exports";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
+import {
+  DateTimePicker,
+  MuiPickersUtilsProvider,
+  KeyboardDateTimePicker
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap"
+
+    background: "white"
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -23,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function NewProduct({ marketId, user }) {
+  const history = useHistory();
   const classes = useStyles();
   const [description, setDescription] = useState("");
   // const [price, setPrice] = useState("");
@@ -37,6 +49,7 @@ function NewProduct({ marketId, user }) {
     lng: null
   });
   const [address, setAddress] = useState("");
+  console.log(pickUpTime);
 
   async function handleAddProduct() {
     try {
@@ -77,12 +90,6 @@ function NewProduct({ marketId, user }) {
       const result = await API.graphql(
         graphqlOperation(createProduct, { input })
       );
-      console.log("created product", result);
-      Notification({
-        title: "success",
-        message: "Product successfully created",
-        type: "success"
-      });
 
       setDescription("");
       // setPrice("");
@@ -90,7 +97,9 @@ function NewProduct({ marketId, user }) {
       setImagePreview("");
       setImage("");
       setIsUploading(false);
+
       setPercentUploaded(0);
+      history.goBack();
     } catch (err) {
       console.error("error adding product", err);
     }
@@ -101,7 +110,7 @@ function NewProduct({ marketId, user }) {
       <h2 className="header">Add New Product</h2>
       <div>
         <Form className="market-header">
-          <Form.Item label="Add Product Description">
+          <Form.Item className="link-2" label="Add Description">
             <Input
               type="text"
               icon="information"
@@ -110,7 +119,6 @@ function NewProduct({ marketId, user }) {
               onChange={description => setDescription(description)}
             />
           </Form.Item>
-
           {/* <Form.Item label="Set Product Price">
             <Input
               type="number"
@@ -120,8 +128,10 @@ function NewProduct({ marketId, user }) {
               onChange={price => setPrice(price)}
             />
           </Form.Item> */}
-
-          <Form.Item label="Choose PickUp Place By Searching For a Public Around You!">
+          <Form.Item
+            className="link-2"
+            label="Choose PickUp Place By Searching For a Public Around You!"
+          >
             <div className="text-center">
               <PickUpPlace
                 setCoordinates={setCoordinates}
@@ -145,26 +155,24 @@ function NewProduct({ marketId, user }) {
               </Radio> */}
             </div>
           </Form.Item>
-          <Form.Item>
-            <div>
-              <form className={classes.container} noValidate>
-                <TextField
-                  id="datetime-local"
-                  label="Select DropOff Date/Time"
-                  type="datetime-local"
-                  onChange={event => setPickUpTime(event.target.value)}
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </form>
-            </div>
-          </Form.Item>
+          <div className={classes.container}>
+            <form className={classes.container} noValidate>
+              <TextField
+                id="datetime-local"
+                label="Select DropOff Date/Time"
+                type="datetime-local"
+                onChange={event => setPickUpTime(event.target.value)}
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </form>
+          </div>
+
           {ImagePreview && (
             <img className="image-preview" src={ImagePreview} alt=""></img>
           )}
-
           {percentUpload > 0 && (
             <Progress
               type="circle"
@@ -216,6 +224,11 @@ function NewProduct({ marketId, user }) {
             >
               {isUploading ? "...Uploading" : "Add Product"}
             </Button>
+          </Form.Item>
+          <Form.Item>
+            <Link className="link-2" to="/">
+              Back To Markets List
+            </Link>
           </Form.Item>
         </Form>
       </div>

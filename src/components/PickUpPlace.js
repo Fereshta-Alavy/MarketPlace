@@ -48,7 +48,6 @@ export default function PickUpPlace({ setCoordinates, setAddress, address }) {
                     className="input-suggestions"
                     {...getSuggestionItemProps(suggestion, { style })}
                   >
-                    <i class="material-icons">location_on</i>
                     <span>{suggestion.description}</span>
                   </div>
                 );
