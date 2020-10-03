@@ -40,7 +40,6 @@ function ProfilePage({ user, userAttributes }) {
   const [emailDialog, setEmailDialog] = useState(false);
   const [PaymentDialog, setPaymentDialog] = useState(false);
   const [PaymentCardId, setPaymentCardId] = useState("");
-  console.log("inside profile page", orders);
   const columns = [
     { prop: "name", width: "150px" },
     { prop: "value", width: "330px" },
@@ -113,10 +112,6 @@ function ProfilePage({ user, userAttributes }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   console.log("payment card id", PaymentCardId);
-  // }, [PaymentCardId]);
-
   async function getUserOrders(userId) {
     const input = { id: userId };
     const result = await API.graphql(graphqlOperation(getUser, input));
@@ -136,7 +131,6 @@ function ProfilePage({ user, userAttributes }) {
       };
 
       const result = await Auth.updateUserAttributes(user, updatedAttributes);
-      console.log("result in profile page", result);
 
       if (result === "SUCCESS") {
         sendVerificationCode("email");

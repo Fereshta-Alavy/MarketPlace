@@ -26,7 +26,8 @@ function NewMarket({
     "Arts",
     "Technology",
     "Crafts",
-    "Entertainment"
+    "Entertainment",
+    "School"
   ]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [options, setOptions] = useState([]);
@@ -35,7 +36,6 @@ function NewMarket({
   //   setName(event.target.value);
   // }
   async function handleAddMarket(user) {
-    console.log("user is", user.attributes.email);
     try {
       setAddMarketDialog(false);
       const input = {
@@ -46,7 +46,7 @@ function NewMarket({
       const result = await API.graphql(
         graphqlOperation(createMarket, { input })
       );
-      console.log({ result });
+
       console.info(`created market : id ${result.data.createMarket.id}`);
       setName("");
       setSelectedTags([]);

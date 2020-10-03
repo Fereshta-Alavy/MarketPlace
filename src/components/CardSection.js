@@ -45,7 +45,6 @@ const CheckoutForm = ({
           graphqlOperation(updateUser, { input })
         );
         setPaymentDialog(false);
-        console.log("incard section", result.data.updateUser.paymentCardId);
         setPaymentCardId(result.data.updateUser.paymentCardId);
       } catch (error) {
         console.log(error);

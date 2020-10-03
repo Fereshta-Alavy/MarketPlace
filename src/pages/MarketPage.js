@@ -12,6 +12,9 @@ import NewProduct from "../components/NewProduct";
 import Product from "../components/Product";
 
 import { formatProductDate } from "../utils";
+import { Button } from "@material-ui/core";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const getMarket = `query GetMarket($id: ID!) {
     getMarket(id: $id) {
@@ -54,7 +57,7 @@ function MarketPage({ marketId, user, userAttributes }) {
   let createProductListener = null;
   let updateProductListener = null;
   let deleteProductListener = null;
-
+  console.log(market);
   useEffect(() => {
     handleGetMarket();
   }, []);
@@ -141,7 +144,6 @@ function MarketPage({ marketId, user, userAttributes }) {
     };
     const result = await API.graphql(graphqlOperation(getMarket, input));
     setMarket(result.data.getMarket);
-    console.log("in the market page", result.data.getMarket);
     setIsLoading(false);
   }
 
@@ -155,39 +157,55 @@ function MarketPage({ marketId, user, userAttributes }) {
     <Loading fullscreen={true} />
   ) : (
     <>
-      <Link className="link" to="/">
+      <Link className="items-link" to="/">
+        <ArrowBackIcon></ArrowBackIcon>
         Back To Markets List
       </Link>
-      <span className="items-center pt-2">
-        <h2 className="mb-mr">{market.name}</h2> - {market.owner}
-      </span>
-      <div className="items-center pt-2">
-        <span style={{ color: "var(--lightSquidInk)", paddingBottom: "1em" }}>
-          <Icon className="icon" name="date" />
-          {formatProductDate(market.createdAt)}
-        </span>
-      </div>
 
-      <Tabs type="border-card" value={isMarketOwner ? "1" : "2"}>
-        {isMarketOwner && (
-          <Tabs.Pane
-            label={
-              <>
-                <Icon name="plus" className="icon" />
-                Add Product
-              </>
-            }
-            name="1"
-          >
-            {isEmailVerified ? (
-              <NewProduct user={user} marketId={marketId} />
-            ) : (
-              <Link to="/profile" className="header">
-                Verify Your Email Before Adding Product{" "}
-              </Link>
-            )}
-          </Tabs.Pane>
+      <span className="items-center pt-2">
+        <h2 className="mb-mr">{market.name}</h2>
+      </span>
+
+      <span
+        style={{
+          color: "var(--lightSquidInk)",
+          paddingBottom: "1em",
+          display: "flex",
+          textAlign: "center"
+        }}
+      >
+        {isEmailVerified ? (
+          <Link className="items-link" to={`/addProduct/${market.id}`}>
+            <AddCircleIcon />
+            Add New Product
+          </Link>
+        ) : (
+          <Link to="/profile" className="header">
+            Verify Your Email Before Adding Product{" "}
+          </Link>
         )}
+      </span>
+
+      <Tabs type="border-card">
+        {
+          // <Tabs.Pane
+          //   label={
+          //     <>
+          //       <Icon name="plus" className="icon" />
+          //       Add Product
+          //     </>
+          //   }
+          //   name="1"
+          // >
+          //   {isEmailVerified ? (
+          //     <NewProduct user={user} marketId={marketId} />
+          //   ) : (
+          //     <Link to="/profile" className="header">
+          //       Verify Your Email Before Adding Product{" "}
+          //     </Link>
+          //   )}
+          // </Tabs.Pane>
+        }
         {/* product list */}
         <Tabs.Pane
           label={

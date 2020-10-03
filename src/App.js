@@ -5,7 +5,7 @@ import { getUser } from "./graphql/queries";
 import { registerUser } from "./graphql/mutations";
 import { Authenticator, AmplifyTheme } from "aws-amplify-react";
 import { Router, Route } from "react-router-dom";
-
+import NewProduct from "./components/NewProduct";
 import HomePage from "./pages/HomePage";
 import MarketPage from "./pages/MarketPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -84,7 +84,6 @@ function App() {
         const newUser = await API.graphql(
           graphqlOperation(registerUser, { input: registerUserInput })
         );
-        console.log(newUser);
       } catch (err) {
         console.error("error registering user", err);
       }
@@ -118,6 +117,16 @@ function App() {
               path="/markets/:marketId"
               component={({ match }) => (
                 <MarketPage
+                  user={user}
+                  marketId={match.params.marketId}
+                  userAttributes={userAttributes}
+                />
+              )}
+            />
+            <Route
+              path="/addProduct/:marketId"
+              component={({ match }) => (
+                <NewProduct
                   user={user}
                   marketId={match.params.marketId}
                   userAttributes={userAttributes}
